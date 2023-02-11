@@ -209,6 +209,19 @@ class ray
 
 
 
+// HIT SPHERE Function
+
+bool hit_sphere(const point3& cen, double rad, const ray& r)
+{
+    vec3 oc = r.origin() - cen;
+    auto a = r.direction() * r.direction();
+    auto b = 2.0 * oc * r.direction();
+    auto c = oc*oc - rad*rad;
+    auto D = b*b - 4*a*c;
+
+    return (D > 0)? 1 : 0;
+}
+
 
 
 
@@ -216,6 +229,11 @@ class ray
 
 color ray_color(const ray& r)
 {
+    if(hit_sphere(point3(-1, 0, -2), 1, r))
+    {
+        return color(0.5,0,0.5);
+    }
+
     vec3 unit_direc = unit(r.direction());
 
     auto t = 0.5 * (unit_direc.y() + 1.0);
@@ -230,9 +248,9 @@ color ray_color(const ray& r)
 int main()
 {
     // Image
-    const auto aspect_ratio = 16 / 9;
-    const int image_width = 256;
-    const int image_height = 256;
+    const double aspect_ratio = 16.0 / 9.0;
+    const int image_width = 400;
+    const int image_height = static_cast<int>(image_width / aspect_ratio);
 
 
     // Camera
@@ -278,6 +296,8 @@ int main()
             */
         }
     }
+
+    std::cerr << "\n" << " AR : " << aspect_ratio << std::flush;
 
     std::cerr << "\nCompleted!\n";
 }
