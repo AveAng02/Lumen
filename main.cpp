@@ -211,15 +211,33 @@ class ray
 
 // HIT SPHERE Function
 
-bool hit_sphere(const point3& cen, double rad, const ray& r)
+struct SPHERE
 {
-    vec3 oc = r.origin() - cen;
+    point3 center;
+    double radius;
+
+    SPHERE()
+    {
+        this->center = point3(0,0,0);
+        this->radius = 0.0;
+    }
+
+    SPHERE(point3 center_, double radius_)
+    {
+        this->center = center_;
+        this->radius = radius_;
+    }
+};
+
+double hit_sphere(const SPHERE sp, const ray& r)
+{
+    vec3 oc = r.origin() - sp.center;
     auto a = r.direction() * r.direction();
     auto b = 2.0 * oc * r.direction();
-    auto c = oc*oc - rad*rad;
+    auto c = oc*oc - sp.radius*sp.radius;
     auto D = b*b - 4*a*c;
 
-    return (D > 0)? 1 : 0;
+    return (D > 0)? ((-b - sqrt(D)) / (2.0*a)) : -1 ;
 }
 
 
@@ -227,16 +245,19 @@ bool hit_sphere(const point3& cen, double rad, const ray& r)
 
 // Defining Ray Color
 
-color ray_color(const ray& r)
+color ray_color(const ray& r, SPHERE sp)
 {
-    if(hit_sphere(point3(-1, 0, -2), 1, r))
+    auto t = hit_sphere(sp, r);
+    
+    if(t > 0.0)
     {
-        return color(0.5,0,0.5);
+        vec3 normal = unit(r.at(t) - sp.center);
+        return 0.5*color(normal.x() + 1, normal.y() + 1, normal.z() + 1);
     }
 
     vec3 unit_direc = unit(r.direction());
 
-    auto t = 0.5 * (unit_direc.y() + 1.0);
+    t = 0.5 * (unit_direc.y() + 1.0);
 
     return (1.0 - t)*color(1,1,1) + t*color(0.5,0.7,1);
 }
@@ -247,6 +268,9 @@ color ray_color(const ray& r)
 
 int main()
 {
+    // Scene objects
+    SPHERE sp1(point3(-1, 0, -2), 1);
+
     // Image
     const double aspect_ratio = 16.0 / 9.0;
     const int image_width = 400;
@@ -260,10 +284,11 @@ int main()
     auto viewport_height = 2.0;
     auto viewport_width = aspect_ratio * viewport_height;
     auto focal_length = 1.0;
+    auto focus = vec3(0, 0, focal_length);
 
     auto horizontal = vec3(viewport_width, 0, 0);
     auto vertical = vec3(0, viewport_height, 0);
-    auto lower_left_corner = origin - horizontal/2 - vertical/2 - vec3(0, 0, focal_length);
+    auto lower_left_corner = origin - horizontal/2 - vertical/2 - focus;
 
 
 
@@ -284,7 +309,7 @@ int main()
             auto v = double(j) / (image_height - 1);
 
             ray r(origin, lower_left_corner + u*horizontal + v*vertical - origin);
-            color pixelCol = ray_color(r);
+            color pixelCol = ray_color(r, sp1);
             write_color(std::cout, pixelCol);
 
             /*
