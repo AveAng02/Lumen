@@ -209,23 +209,29 @@ class ray
 
 
 
-// HIT SPHERE Function
+// SPHERE 
 
 struct SPHERE
 {
     point3 center;
     double radius;
+    color sph_color;
+    std::string name;
 
     SPHERE()
     {
         this->center = point3(0,0,0);
         this->radius = 0.0;
+        this->sph_color = color(0,0,0);
+        this->name = "SPHERE";
     }
 
-    SPHERE(point3 center_, double radius_)
+    SPHERE(point3 center_, double radius_, color col_, std::string name_)
     {
         this->center = center_;
         this->radius = radius_;
+        this->sph_color = col_;
+        this->name = name_;
     }
 };
 
@@ -247,6 +253,26 @@ double hit_sphere(const SPHERE sp, const ray& r)
 
 color ray_color(const ray& r, SPHERE sp)
 {
+    if(hit_sphere(sp, r) >= 0.0)
+    {
+        return sp.sph_color;
+    }
+
+    vec3 unit_direc = unit(r.direction());
+
+    auto t = 0.5 * (unit_direc.y() + 1.0);
+
+    return (1.0 - t)*color(1,1,1) + t*color(0.5,0.7,1);
+}
+
+
+
+
+
+// Normal
+
+color ray_normal_color(const ray& r, SPHERE sp)
+{
     auto t = hit_sphere(sp, r);
     
     if(t > 0.0)
@@ -264,12 +290,14 @@ color ray_color(const ray& r, SPHERE sp)
 
 
 
+
+
 // Main
 
 int main()
 {
     // Scene objects
-    SPHERE sp1(point3(-1, 0, -2), 1);
+    SPHERE sp1(point3(-1, 0, -2), 1, color(1,0,0), "RED_SPHERE");
 
     // Image
     const double aspect_ratio = 16.0 / 9.0;
@@ -309,7 +337,7 @@ int main()
             auto v = double(j) / (image_height - 1);
 
             ray r(origin, lower_left_corner + u*horizontal + v*vertical - origin);
-            color pixelCol = ray_color(r, sp1);
+            color pixelCol = ray_normal_color(r, sp1);
             write_color(std::cout, pixelCol);
 
             /*
