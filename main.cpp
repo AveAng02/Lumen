@@ -1,8 +1,10 @@
 
 #include <cmath>
 #include <iostream>
-#include <vec3.h>
+#include <fstream>
 
+#include "ray.h"
+#include "vec3.h"
 
 // Color Utility Functions
 
@@ -14,64 +16,6 @@ void write_color(std::ostream &out, color pixel)
         << static_cast<int>(255.999 * pixel.z()) << "\n";
 }
 
-
-// Ray Class
-
-class ray
-{
-    public:
-        ray() {}
-
-        ray(const point3 origin, const vec3& direction): o(origin), d(direction) {}
-
-        point3 origin() const
-        {
-            return o;
-        }
-
-        vec3 direction() const
-        {
-            return d;
-        }
-
-        point3 at(const double t) const
-        {
-            return o + t*d;
-        }
-
-    public:
-        point3 o;
-        vec3 d;
-};
-
-
-
-// SPHERE 
-
-struct SPHERE
-{
-    point3 center;
-    double radius;
-    color sph_color;
-    std::string name;
-
-    SPHERE()
-    {
-        this->center = point3(0,0,0);
-        this->radius = 0.0;
-        this->sph_color = color(0,0,0);
-        this->name = "SPHERE";
-    }
-
-    SPHERE(point3 center_, double radius_, color col_, std::string name_)
-    {
-        this->center = center_;
-        this->radius = radius_;
-        this->sph_color = col_;
-        this->name = name_;
-    }
-};
-
 double hit_sphere(const SPHERE sp, const ray& r)
 {
     vec3 oc = r.origin() - sp.center;
@@ -82,9 +26,6 @@ double hit_sphere(const SPHERE sp, const ray& r)
 
     return (D > 0)? ((-b - sqrt(D)) / (2.0*a)) : -1 ;
 }
-
-
-
 
 // Defining Ray Color
 
@@ -131,8 +72,13 @@ color ray_normal_color(const ray& r, SPHERE sp)
 
 // Main
 
-int main()
+// To compile: g++ main.cpp ray.cpp vec3.cpp
+
+int main(int argc, char **argv)
 {
+
+    std::ofstream outputImage("test.jpeg");
+
     // Scene objects
     SPHERE sp1(point3(-1, 0, -2), 1, color(1,0,0), "RED_SPHERE");
 
@@ -160,7 +106,7 @@ int main()
 
     // Render
 
-    std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
+    outputImage << "P3\n" << image_width << " " << image_height << "\n255\n";
 
     for(int ir = 0, ig = 0, ib = 0, i = 0, j = 0; j < image_height; j++)
     {
@@ -175,7 +121,7 @@ int main()
 
             ray r(origin, lower_left_corner + u*horizontal + v*vertical - origin);
             color pixelCol = ray_normal_color(r, sp1);
-            write_color(std::cout, pixelCol);
+            write_color(outputImage, pixelCol);
 
             /*
             ir = static_cast<int>(255.999 * double(i) / (image_width - 1));
@@ -190,4 +136,6 @@ int main()
     std::cerr << "\n" << " AR : " << aspect_ratio << std::flush;
 
     std::cerr << "\nCompleted!\n";
+
+    outputImage.close();
 }
