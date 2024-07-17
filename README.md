@@ -4,8 +4,8 @@ Building a ray tracer based on the book Ray Tracing in One Weekend Peter Shirley
 
 ## Build
 
-> mkdir build
-> cd build
-> cmake ../
-> cmake --build .
-> ./lumen
+* mkdir build
+* cd build
+* cmake ../
+* cmake --build .
+* ./lumen
