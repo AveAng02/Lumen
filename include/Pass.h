@@ -4,40 +4,36 @@
 #include "Ray.h"
 #include "Sphere.h"
 
-
 namespace lumen
 {
     // Defining Ray Color
-    color ray_color(const ray& r, SPHERE sp)
+    color ray_color(const ray& r, const HitList& world)
     {
-        if(hit_sphere(sp, r) >= 0.0)
+        hitRecord rec;
+
+        if(world.hit(r, 0, INF, rec))
         {
-            return sp.sph_color;
+            return 0.5 * (rec.normal + color(1, 1, 1));
         }
 
         vec3 unit_direc = unit(r.direction());
-
         auto t = 0.5 * (unit_direc.y() + 1.0);
-
         return (1.0 - t)*color(1,1,1) + t*color(0.5,0.7,1);
     }
 
 
     // Normal
-    color ray_normal_color(const ray& r, SPHERE sp)
+    color ray_normal_color(const ray& r, const HitList& world)
     {
-        auto t = hit_sphere(sp, r);
-        
-        if(t > 0.0)
+        hitRecord rec;
+
+        if(world.hit(r, 0, INF, rec))
         {
-            vec3 normal = unit(r.at(t) - sp.center);
-            return 0.5*color(normal.x() + 1, normal.y() + 1, normal.z() + 1);
+            return 0.5 * (rec.normal + color(1, 1, 1));
         }
 
         vec3 unit_direc = unit(r.direction());
-
-        t = 0.5 * (unit_direc.y() + 1.0);
-
+        auto t = 0.5 * (unit_direc.y() + 1.0);
         return (1.0 - t)*color(1,1,1) + t*color(0.5,0.7,1);
     }
 }

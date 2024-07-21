@@ -1,44 +1,73 @@
 #pragma once
 
-
 #include "Ray.h"
-
+#include "Geometry.h"
 
 namespace lumen
 {
     // SPHERE 
-    struct SPHERE
+    struct SPHERE : public Geometry
     {
+        SPHERE(point3 center_ = point3(0.0f, 0.0f, 0.0f), 
+               double radius_ = 1.0f, 
+               color col_ = color(1.0f, 0.0f, 0.0f), 
+               std::string name_ = "SPHERE")
+        :   center(center_),
+            radius(radius_),
+            sph_color(col_),
+            name(name_)
+        {}
+
+        // Checks if the sphere hits the body
+        // Optimised intersection code
+        bool hit(const ray& r, 
+                double ray_tmin, 
+                double ray_tmax,
+                hitRecord& rec) const override
+        {
+            vec3 oc = center - r.origin();
+            auto a = r.direction().length_squared();
+            auto h = oc.dot(r.direction());
+            auto c = oc.length_squared() - radius * radius;
+            auto discriminant = h*h - a*c;
+
+            if(discriminant < 0)
+                return false;
+
+            auto sqrtd = sqrt(discriminant);
+
+            // Getting nearest root
+            // Calculating the first root of the quadratic
+            auto root = (h - sqrtd) / a;
+
+            if(root <= ray_tmin || root >= ray_tmax)
+            {
+                // Calculating the second root of the quadratic
+                root = (h + sqrtd) / a;
+
+                if(root <= ray_tmin || root >= ray_tmax)
+                    return false;
+            }
+
+            // Storing distance of intersection
+            rec.t = root;
+
+            // Storing point of intersection
+            rec.p = r.at(rec.t);
+
+            // Calculating the normal at the point of intersection
+            rec.normal = (rec.p - center) / radius;
+
+            vec3 outNormal = (rec.p - center) / radius;
+            rec.setFaceNormal(r, outNormal); // Setting the value of normal
+
+            return true;
+        }
+
+    private:
         point3 center;
         double radius;
         color sph_color;
         std::string name;
-
-        SPHERE()
-        {
-            this->center = point3(0,0,0);
-            this->radius = 0.0;
-            this->sph_color = color(0,0,0);
-            this->name = "SPHERE";
-        }
-
-        SPHERE(point3 center_, double radius_, color col_, std::string name_)
-        {
-            this->center = center_;
-            this->radius = radius_;
-            this->sph_color = col_;
-            this->name = name_;
-        }
     };
-
-    double hit_sphere(const SPHERE sp, const ray& r)
-    {
-        vec3 oc = r.origin() - sp.center;
-        auto a = r.direction() * r.direction();
-        auto b = 2.0 * oc * r.direction();
-        auto c = oc*oc - sp.radius*sp.radius;
-        auto D = b*b - 4*a*c;
-
-        return (D > 0)? ((-b - sqrt(D)) / (2.0*a)) : -1 ;
-    }
 }

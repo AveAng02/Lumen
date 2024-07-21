@@ -1,72 +1,87 @@
-
 #include <cmath>
+#include <fstream>
 #include <iostream>
+#include <limits>
+#include <memory>
 
+#include "Lumen.h"
 
-#include "Vec3.h"
-#include "Ray.h"
-#include "Sphere.h"
-#include "Pass.h"
+// #define BEAUTY_PASS
+#define NORMAL_PASS
 
-
+// View using : https://www.cs.rhodes.edu/welshc/COMP141_F16/ppmReader.html
 
 int main()
 {
+#ifdef BEAUTY_PASS
+    std::ofstream ofs("output_beauty.ppm", std::ios_base::out | std::ios_base::binary);
+#endif // BEAUTY_PASS
+
+#ifdef NORMAL_PASS
+    std::ofstream ofs("output_normal.ppm", std::ios_base::out | std::ios_base::binary);
+#endif // NORMAL_PASS
+    
+    // Image File
+    double aspectRatio = 16.0 / 9.0;
+    int image_width = 400u;
+    int image_height = image_width / aspectRatio;
+    
+    ofs << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+
     // Scene objects
-    lumen::SPHERE sp1(lumen::point3(-1, 0, -2), 1, lumen::color(1,0,0), "RED_SPHERE");
+    lumen::HitList world;
 
-    // Image
-    const double aspect_ratio = 16.0 / 9.0;
-    const int image_width = 400;
-    const int image_height = static_cast<int>(image_width / aspect_ratio);
-
+    world.add(std::make_shared<lumen::SPHERE>(lumen::point3(0, 0, -1), 0.5, lumen::color(1,0,0), "RED_SPHERE"));
+    world.add(std::make_shared<lumen::SPHERE>(lumen::point3(0, -101.5, -1), 100, lumen::color(0,0,1), "BIG_BLUE_SPHERE"));
 
     // Camera
     // Camera position = (0,0,0)
-    auto origin = lumen::point3(0,0,0);
-
-    auto viewport_height = 2.0;
-    auto viewport_width = aspect_ratio * viewport_height;
     auto focal_length = 1.0;
-    auto focus = lumen::vec3(0, 0, focal_length);
+    auto vpW = 2.0;  // view port height
+    auto vpH = vpW / aspectRatio; // view port width
+    auto camera_center = lumen::point3(0, 0, 1);
 
-    auto horizontal = lumen::vec3(viewport_width, 0, 0);
-    auto vertical = lumen::vec3(0, viewport_height, 0);
-    auto lower_left_corner = origin - horizontal/2 - vertical/2 - focus;
+    // Vectors on the view port edges
+    auto horizontal = lumen::vec3(vpW, 0, 0); // view port u
+    auto vertical = lumen::vec3(0, -vpH, 0);  // view port v
 
+    // Pitch between pixels in horizontal and vertical directions
+    auto deltaV = horizontal / image_width;
+    auto deltaU = vertical / image_height;
 
+    // Location of upper left corner of the view port
+    auto vpReference = camera_center - lumen::vec3(0, 0, focal_length) 
+                        - horizontal/2 - vertical/2;
+    auto pXRef = vpReference + 0.5 * (deltaU + deltaV); // Location of upper left pixel
 
+    lumen::ray hitRay;
+    lumen::color pixelCol;
 
     // Render
 
-    std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
+    // std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
-    for(int ir = 0, ig = 0, ib = 0, i = 0, j = 0; j < image_height; j++)
+    for(int i = 0, j = 0; i < image_height; i++)
     {
-        std::cerr << "\n" << j << " Scanlines completed " << std::flush;
+        // std::cerr << "\n" << j << " Scanlines completed " << std::flush;
         
-        for(i = 0; i < image_width; i++)
+        for(j = 0; j < image_width; j++)
         {
-            // color pixelCol(double(i) / (image_width - 1), 0.1, double(j) / (image_height - 1));
+            auto pXCentre = pXRef + (i * deltaU) + (j * deltaV);
+            auto rayDirection = pXCentre - camera_center;
+            hitRay = lumen::ray(pXCentre, rayDirection);
 
-            auto u = double(i) / (image_width - 1);
-            auto v = double(j) / (image_height - 1);
+            #ifdef BEAUTY_PASS
+                pixelCol = lumen::ray_color(hitRay, world);
+            #endif // BEAUTY_PASS
 
-            lumen::ray r(origin, lower_left_corner + u*horizontal + v*vertical - origin);
-            lumen::color pixelCol = lumen::ray_normal_color(r, sp1);
-            lumen::write_color(std::cout, pixelCol);
-
-            /*
-            ir = static_cast<int>(255.999 * double(i) / (image_width - 1));
-            ig = static_cast<int>(255.999 * 0.1);
-            ib = static_cast<int>(255.999 * double(j) / (image_height - 1));
-
-            std::cout << ir << " " << ig << " " << ib << "\n";
-            */
+            #ifdef NORMAL_PASS
+                pixelCol = lumen::ray_normal_color(hitRay, world);
+            #endif // NORMAL_PASS
+            
+            lumen::write_color(ofs, pixelCol);
         }
     }
-
-    std::cerr << "\n" << " AR : " << aspect_ratio << std::flush;
 
     std::cerr << "\nCompleted!\n";
 }

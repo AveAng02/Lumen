@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include <cmath>
 
 
@@ -37,6 +38,13 @@ namespace lumen
             double z() const
             {
                 return e[2];
+            }
+
+            double dot(const vec3& vec) const 
+            {
+                return ((e[0] * vec.x()) + 
+                        (e[1] * vec.y()) + 
+                        (e[2] * vec.z()));
             }
 
             vec3 operator-() const
@@ -168,6 +176,14 @@ namespace lumen
 
     // Color Utility Functions
     void write_color(std::ostream &out, color pixel)
+    {
+        // Printing the translated value of  pixel between [0,255]
+        out << static_cast<int>(255.999 * pixel.x()) << " "
+            << static_cast<int>(255.999 * pixel.y()) << " "
+            << static_cast<int>(255.999 * pixel.z()) << "\n";
+    }
+
+    void write_color(std::ofstream &out, color pixel)
     {
         // Printing the translated value of  pixel between [0,255]
         out << static_cast<int>(255.999 * pixel.x()) << " "

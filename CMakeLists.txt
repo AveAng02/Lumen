@@ -1,4 +1,6 @@
 
+# TODO: Write a script that automates build
+
 cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -11,6 +13,8 @@ include_directories(include)
 add_executable(Lumen Main.cpp 
 include/Vec3.h
 include/Ray.h
+include/Geometry.h
+include/HitList.h
 include/Sphere.h 
 include/Pass.h)
 
