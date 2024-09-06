@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MathUtils.h"
 #include "Ray.h"
 #include "Geometry.h"
 
@@ -14,9 +15,10 @@ namespace lumen
                std::string name_ = "SPHERE")
         :   center(center_),
             radius(radius_),
-            sph_color(col_),
             name(name_)
-        {}
+        {
+            geoColor = col_;
+        }
 
         // Checks if the sphere hits the body
         // Optimised intersection code
@@ -40,7 +42,7 @@ namespace lumen
             // Calculating the first root of the quadratic
             auto root = (h - sqrtd) / a;
 
-            if(root <= ray_tmin || root >= ray_tmax)
+            if( root <= ray_tmin || root >= ray_tmax)
             {
                 // Calculating the second root of the quadratic
                 root = (h + sqrtd) / a;
@@ -64,10 +66,8 @@ namespace lumen
             return true;
         }
 
-    private:
         point3 center;
         double radius;
-        color sph_color;
         std::string name;
     };
 }

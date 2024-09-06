@@ -6,19 +6,17 @@
 
 #include "Lumen.h"
 
-// #define BEAUTY_PASS
-#define NORMAL_PASS
-
-// View using : https://www.cs.rhodes.edu/welshc/COMP141_F16/ppmReader.html
+#define BEAUTY_PASS
+// #define NORMAL_PASS
 
 int main()
 {
 #ifdef BEAUTY_PASS
-    std::ofstream ofs("output_beauty.ppm", std::ios_base::out | std::ios_base::binary);
+    std::ofstream ofs("../output/output_beauty.ppm", std::ios_base::out | std::ios_base::binary);
 #endif // BEAUTY_PASS
 
 #ifdef NORMAL_PASS
-    std::ofstream ofs("output_normal.ppm", std::ios_base::out | std::ios_base::binary);
+    std::ofstream ofs("../output/output_normal.ppm", std::ios_base::out | std::ios_base::binary);
 #endif // NORMAL_PASS
     
     // Image File

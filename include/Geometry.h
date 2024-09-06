@@ -1,9 +1,13 @@
 #pragma once
 
+#include <memory>
+
 #include "Ray.h"
 
 namespace lumen
 {
+    class Geometry;
+
     class hitRecord
     {
     public:
@@ -11,6 +15,7 @@ namespace lumen
         vec3 normal;
         double t;
         bool geoFaceFront;
+        std::shared_ptr<Geometry> geoPtr;
         // TODO: add geometry
 
         void setFaceNormal(const ray& r, const vec3& outWardNormal)
@@ -26,7 +31,11 @@ namespace lumen
     public:
         virtual ~Geometry() = default;
 
-        virtual bool hit(const ray& r, double ray_tmin, double ray_tmax,
-                         hitRecord& rec) const = 0;
+        virtual bool hit(const ray& r,
+                        double ray_tmin,
+                        double ray_tmax,
+                        hitRecord& rec) const = 0;
+
+        color geoColor; // TODO: convert to a material pointer
     };
 }

@@ -26,7 +26,7 @@ namespace lumen
         std::string fileName;
         std::ifstream imgFile;
         std::vector<color> pixels;
-    }
+    };
 }
 
 

@@ -35,6 +35,7 @@ namespace lumen
                     hasHit = true;
                     closest = tempRec.t;
                     rec = tempRec;
+                    rec.geoPtr = obj;
                 }
             }
 

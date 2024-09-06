@@ -10,3 +10,5 @@ Building a ray tracer based on the book Ray Tracing in One Weekend Peter Shirley
 * cmake ../
 * cmake --build .
 * ./lumen
+
+[View using this site](https://www.cs.rhodes.edu/welshc/COMP141_F16/ppmReader.html)
