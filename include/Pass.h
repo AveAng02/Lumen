@@ -22,7 +22,7 @@ namespace lumen
             vec3 direc = randomVec();
 
             if(direc.dot(rec.normal) < 0.0f)
-                direc *= -1;
+                direc = -direc;
 
             return rec.geoPtr->geoColor * ray_color(ray(rec.p, direc), world, depth - 1);
         }

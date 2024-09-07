@@ -26,7 +26,7 @@ namespace lumen
         void initialize()
         {
             aspectRatio = 16.0 / 9.0;
-            image_width = 400u;
+            image_width = 800u;
             image_height = image_width / aspectRatio;
             spp = 10;
 
@@ -53,8 +53,10 @@ namespace lumen
 
         void render(const HitList& world)
         {
+            uint32_t r, g, b;
             ray hitRay;
             color pixelCol;
+            std::string ppmImageData = "";
 
 #ifdef BEAUTY_PASS
             std::ofstream ofs("../output/output_beauty.ppm", std::ios_base::out | std::ios_base::binary);
@@ -64,7 +66,8 @@ namespace lumen
             std::ofstream ofs("../output/output_normal.ppm", std::ios_base::out | std::ios_base::binary);
 #endif // NORMAL_PASS
 
-            ofs << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+            ppmImageData = ppmImageData + "P3\n" + std::to_string(image_width) + " " 
+                            + std::to_string(image_height) + "\n255\n";
 
             std::cout << std::setprecision(2) << std::fixed;
 
@@ -90,12 +93,19 @@ namespace lumen
 
                     pixelCol /= spp;
 
-                    lumen::write_color(ofs, pixelCol);
+                    r = static_cast<int>(255.999 * clamp(pixelCol[0], 0.0f, 1.0f));
+                    g = static_cast<int>(255.999 * clamp(pixelCol[1], 0.0f, 1.0f));
+                    b = static_cast<int>(255.999 * clamp(pixelCol[2], 0.0f, 1.0f));
+
+                    ppmImageData = ppmImageData + std::to_string(r)
+                                + " " + std::to_string(g) + " " + std::to_string(b) + "\n";
                 }
             }
+        
+            lumen::write_color(ofs, ppmImageData);
         }
-        // color ray_color(const ray& r, const HitList& world);
-        // color ray_normal_color(const ray& r, const HitList& world);
+        
+        
 
         // Image File
         double aspectRatio;
