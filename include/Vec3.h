@@ -154,6 +154,11 @@ namespace lumen
         return vec3(t*v[0], t*v[1], t*v[2]);
     }
 
+    inline vec3 operator*(const vec3& v1, const vec3& v2)
+    {
+        return vec3(v1[0]*v2[0], v1[1]*v2[1], v1[2]*v2[2]);
+    }
+
     inline vec3 operator/(const double t, const vec3& v)
     {
         return vec3(v[0]/t, v[1]/t, v[2]/t);
@@ -162,11 +167,6 @@ namespace lumen
     inline vec3 operator/(const vec3& v, const double t)
     {
         return vec3(v[0]/t, v[1]/t, v[2]/t);
-    }
-
-    inline double operator*(const vec3& u, const vec3& v)
-    {
-        return u[0]*v[0] + u[1]*v[1] + u[2]*v[2];
     }
 
     inline vec3 operatorX(const vec3& u, const vec3& v)

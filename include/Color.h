@@ -1,3 +1,5 @@
+#include <string>
+
 #include "Vec3.h"
 #include "MathUtils.h"
 
@@ -12,6 +14,12 @@ namespace lumen
 
         // Printing the translated value of  pixel between [0,255]
         out << r << " " << g << " " << b << "\n";
+    }
+
+    void write_color(std::ostream &out, std::string str)
+    {
+        // Printing the translated value of  pixel between [0,255]
+        out << str << "\n";
     }
 }
 

@@ -3,8 +3,11 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-// #define BEAUTY_PASS
-#define NORMAL_PASS
+#define BEAUTY_PASS
+// #define NORMAL_PASS
+
+#include <iostream>
+#include <iomanip>
 
 #include "Lumen.h"
 #include "HitList.h"
@@ -63,28 +66,21 @@ namespace lumen
 
             ofs << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
+            std::cout << std::setprecision(2) << std::fixed;
+
             for(int i = 0, j = 0; i < image_height; i++)
             {
+                std::cout << (i * 100.0f / image_height) << " \% completed" << std::endl;
+
                 for(j = 0; j < image_width; j++)
                 {
-                    /*
-                    auto pXCentre = pXRef + (i * deltaU) + (j * deltaV);
-                    auto rayDirection = pXCentre - camera_center;
-                    hitRay = lumen::ray(pXCentre, rayDirection);
-
-                    pixelCol = lumen::ray_normal_color(hitRay, world);
-                    */
-
                     pixelCol = color();
 
                     for(int sample = 0; sample < spp; sample++)
                     {
                         hitRay = getRandomRay(i, j);
-
-                        // hitRay.print();
-
 #ifdef BEAUTY_PASS
-                        pixelCol += ray_color(hitRay, world);
+                        pixelCol += ray_color(hitRay, world, maxDepth);
 #endif // BEAUTY_PASS
 
 #ifdef NORMAL_PASS
@@ -106,6 +102,7 @@ namespace lumen
         int image_width;
         int image_height;
         uint32_t spp; // samples per pixel
+        int maxDepth;
         bool normal_pass;
 
     private:

@@ -7,14 +7,24 @@
 namespace lumen
 {
     // Defining Ray Color
-    color ray_color(const ray& r, const HitList& world)
+    color ray_color(const ray& r, const HitList& world, int depth)
     {
         hitRecord rec;
 
-        if(world.hit(r, 0, INF, rec))
+        if(world.hit(r, 0.001f, INF, rec))
         {
-            // std::cout << "Hit Ball" << std::endl;
-            return rec.geoPtr->geoColor;
+            if(depth <= 0)
+            {
+                return rec.geoPtr->geoColor;
+            }
+
+            // Checking the hemisphere of the random vec
+            vec3 direc = randomVec();
+
+            if(direc.dot(rec.normal) < 0.0f)
+                direc *= -1;
+
+            return rec.geoPtr->geoColor * ray_color(ray(rec.p, direc), world, depth - 1);
         }
 
         vec3 unit_direc = unit(r.direction());
