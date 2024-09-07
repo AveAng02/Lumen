@@ -54,28 +54,22 @@ namespace lumen
 
             double operator[](int i) const
             {
-                if(i < 3 && i >=0)
-                {
-                    return e[i];
-                }
-                else
+                if(!(i < 3 && i >=0))
                 {
                     std::cerr << "Invalid Access Specifier" << std::flush;
                 }
 
-                return -1; // TO FIX
+                return e[i];
             }
 
             double& operator[](int i)
             {
-                if(i < 3 && i >=0)
-                {
-                    return e[i];
-                }
-                else
+                if(!(i < 3 && i >=0))
                 {
                     std::cerr << "Invalid Access Specifier" << std::flush;
                 }
+
+                return e[i];
             }
 
             vec3& operator+=(const vec3 &v)
@@ -172,22 +166,5 @@ namespace lumen
     inline vec3 unit(const vec3& v)
     {
         return v / v.length();
-    }
-
-    // Color Utility Functions
-    void write_color(std::ostream &out, color pixel)
-    {
-        // Printing the translated value of  pixel between [0,255]
-        out << static_cast<int>(255.999 * pixel.x()) << " "
-            << static_cast<int>(255.999 * pixel.y()) << " "
-            << static_cast<int>(255.999 * pixel.z()) << "\n";
-    }
-
-    void write_color(std::ofstream &out, color pixel)
-    {
-        // Printing the translated value of  pixel between [0,255]
-        out << static_cast<int>(255.999 * pixel.x()) << " "
-            << static_cast<int>(255.999 * pixel.y()) << " "
-            << static_cast<int>(255.999 * pixel.z()) << "\n";
     }
 }
