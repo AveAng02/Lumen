@@ -13,9 +13,9 @@ namespace lumen
         public:
             vec3() 
             {
-                e[0] = 0;
-                e[1] = 0;
-                e[2] = 0;
+                e[0] = 0.0f;
+                e[1] = 0.0f;
+                e[2] = 0.0f;
             }
 
             vec3(double e0, double e1, double e2) 
@@ -101,6 +101,19 @@ namespace lumen
             double length() const
             {
                 return sqrt(length_squared());
+            }
+
+            vec3 normalize()
+            {
+                e[0] /= length();
+                e[1] /= length();
+                e[2] /= length();
+                return *this;
+            }
+
+            void print()
+            {
+                std::cout << "Vec3f : { " << e[0] << ", " << e[1] << ", " << e[2] << "}\n";
             }
 
             double e[3];

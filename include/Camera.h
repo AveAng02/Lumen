@@ -3,11 +3,12 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#define BEAUTY_PASS
-// #define NORMAL_PASS
+// #define BEAUTY_PASS
+#define NORMAL_PASS
 
 #include "Lumen.h"
 #include "HitList.h"
+#include "MathUtils.h"
 
 namespace lumen
 {
@@ -24,6 +25,7 @@ namespace lumen
             aspectRatio = 16.0 / 9.0;
             image_width = 400u;
             image_height = image_width / aspectRatio;
+            spp = 10;
 
             // Camera
             // Camera position = (0,0,0)
@@ -41,7 +43,7 @@ namespace lumen
             deltaU = vertical / image_height;
 
             // Location of upper left corner of the view port
-            auto vpReference = camera_center - lumen::vec3(0, 0, focal_length) 
+            vpReference = camera_center - lumen::vec3(0, 0, focal_length) 
                                 - horizontal/2 - vertical/2;
             pXRef = vpReference + 0.5 * (deltaU + deltaV); // Location of upper left pixel
         }
@@ -65,12 +67,33 @@ namespace lumen
             {
                 for(j = 0; j < image_width; j++)
                 {
+                    /*
                     auto pXCentre = pXRef + (i * deltaU) + (j * deltaV);
                     auto rayDirection = pXCentre - camera_center;
                     hitRay = lumen::ray(pXCentre, rayDirection);
 
                     pixelCol = lumen::ray_normal_color(hitRay, world);
-                    
+                    */
+
+                    pixelCol = color();
+
+                    for(int sample = 0; sample < spp; sample++)
+                    {
+                        hitRay = getRandomRay(i, j);
+
+                        // hitRay.print();
+
+#ifdef BEAUTY_PASS
+                        pixelCol += ray_color(hitRay, world);
+#endif // BEAUTY_PASS
+
+#ifdef NORMAL_PASS
+                        pixelCol += ray_normal_color(hitRay, world);
+#endif // NORMAL_PASS
+                    }
+
+                    pixelCol /= spp;
+
                     lumen::write_color(ofs, pixelCol);
                 }
             }
@@ -82,12 +105,29 @@ namespace lumen
         double aspectRatio;
         int image_width;
         int image_height;
+        uint32_t spp; // samples per pixel
         bool normal_pass;
 
     private:
+        ray getRandomRay(int shifti, int shiftj)
+        {
+            auto offset = vec3(randomFloatInRange(0.0f, 1.0f), 
+                            randomFloatInRange(0.0f, 1.0f), 0);
+
+            auto samplePixel = vpReference
+                            + ((shifti + offset[0]) * deltaU)
+                            + ((shiftj + offset[1]) * deltaV);
+
+            auto rayOrigin = camera_center;
+            auto rayDirection = (samplePixel - camera_center).normalize();
+            return ray(rayOrigin, rayDirection);
+        }
+
+
         vec3 camera_center;
         vec3 deltaU, deltaV;
         vec3 pXRef;
+        vec3 vpReference;
     };
 }
 

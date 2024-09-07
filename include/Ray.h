@@ -27,6 +27,14 @@ namespace lumen
                 return o + t*d;
             }
 
+            void print()
+            {
+                std::cout << "Ray :\nOrigin : ";
+                o.print();
+                std::cout << "Direction : ";
+                d.print();
+            }
+
         public:
             point3 o;
             vec3 d;

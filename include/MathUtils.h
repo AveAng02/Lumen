@@ -12,9 +12,14 @@ namespace lumen
     float randomFloatInRange(float min = std::numeric_limits<float>::min(), 
                             float max = std::numeric_limits<float>::max())
     {
+        /*
         std::uniform_real_distribution<float> distribution(min, max);
         std::mt19937 generator;
         return distribution(generator);
+        */
+
+       float num = std::rand() / RAND_MAX;
+       return min + (max - min) * num;
     }
 
     int randomIntInRange(int min = std::numeric_limits<int>::min(), 

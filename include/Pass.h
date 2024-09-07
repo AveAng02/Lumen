@@ -13,6 +13,7 @@ namespace lumen
 
         if(world.hit(r, 0, INF, rec))
         {
+            // std::cout << "Hit Ball" << std::endl;
             return rec.geoPtr->geoColor;
         }
 
