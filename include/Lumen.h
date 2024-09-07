@@ -24,5 +24,6 @@ namespace lumen
 #include "HitList.h"
 #include "Sphere.h"
 #include "Pass.h"
+#include "Camera.h"
 
 #endif // LUMEN

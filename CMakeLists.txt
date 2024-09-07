@@ -16,7 +16,8 @@ include/Ray.h
 include/Geometry.h
 include/HitList.h
 include/Sphere.h 
-include/Pass.h)
+include/Pass.h
+include/Camera.h)
 
 target_include_directories(Lumen PUBLIC
                            "${PROJECT_BINARY_DIR}"
