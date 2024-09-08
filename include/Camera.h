@@ -8,10 +8,13 @@
 
 #include <iostream>
 #include <iomanip>
+#include <memory>
+#include <thread>
 
 #include "Lumen.h"
 #include "HitList.h"
 #include "MathUtils.h"
+#include "Integrator.h"
 
 namespace lumen
 {
@@ -56,7 +59,16 @@ namespace lumen
             uint32_t r, g, b;
             ray hitRay;
             color pixelCol;
-            std::string ppmImageData = "";
+
+            // stores the rgb data width wise
+            std::vector<uint32_t> rgbData (image_height * image_width * 3); 
+            uint32_t c = 0;
+            uint32_t numOfThreads = 0;
+
+            std::cout << "Enter the number of Threads : ";
+            std::cin >> numOfThreads;
+
+            uint32_t scanLinesPerThread = image_height / numOfThreads;
 
 #ifdef BEAUTY_PASS
             std::ofstream ofs("../output/output_beauty.ppm", std::ios_base::out | std::ios_base::binary);
@@ -66,11 +78,9 @@ namespace lumen
             std::ofstream ofs("../output/output_normal.ppm", std::ios_base::out | std::ios_base::binary);
 #endif // NORMAL_PASS
 
-            ppmImageData = ppmImageData + "P3\n" + std::to_string(image_width) + " " 
-                            + std::to_string(image_height) + "\n255\n";
+            ofs << "P3\n" << image_width << " " << image_height << "\n255\n";
 
-            std::cout << std::setprecision(2) << std::fixed;
-
+            /*
             for(int i = 0, j = 0; i < image_height; i++)
             {
                 std::cout << (i * 100.0f / image_height) << " \% completed" << std::endl;
@@ -97,26 +107,26 @@ namespace lumen
                     g = static_cast<int>(255.999 * clamp(pixelCol[1], 0.0f, 1.0f));
                     b = static_cast<int>(255.999 * clamp(pixelCol[2], 0.0f, 1.0f));
 
-                    ppmImageData = ppmImageData + std::to_string(r)
-                                + " " + std::to_string(g) + " " + std::to_string(b) + "\n";
+                    rgbData[c++] = r;
+                    rgbData[c++] = g;
+                    rgbData[c++] = b;
                 }
             }
-        
-            lumen::write_color(ofs, ppmImageData);
+            */
+
+            
+
+
+            std::cout << "Writing Data" << std::endl;
+
+            for(int i = 0; i < rgbData.size(); i+=3)
+            {
+                ofs << rgbData[i] << " " << rgbData[i+1] << " " << rgbData[i+2] << "\n";
+            }
         }
         
-        
 
-        // Image File
-        double aspectRatio;
-        int image_width;
-        int image_height;
-        uint32_t spp; // samples per pixel
-        int maxDepth;
-        bool normal_pass;
-
-    private:
-        ray getRandomRay(int shifti, int shiftj)
+        ray getRandomRay(int shifti, int shiftj) const 
         {
             auto offset = vec3(randomFloatInRange(0.0f, 1.0f), 
                             randomFloatInRange(0.0f, 1.0f), 0);
@@ -129,8 +139,15 @@ namespace lumen
             auto rayDirection = (samplePixel - camera_center).normalize();
             return ray(rayOrigin, rayDirection);
         }
+        
 
-
+        // Image File
+        double aspectRatio;
+        int image_width;
+        int image_height;
+        uint32_t spp; // samples per pixel
+        int maxDepth;
+        bool normal_pass;
         vec3 camera_center;
         vec3 deltaU, deltaV;
         vec3 pXRef;

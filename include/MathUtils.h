@@ -39,13 +39,32 @@ namespace lumen
         return x;
     }
 
+    float linearToGamma(float linearComponent)
+    {
+        if (linearComponent > 0)
+            return std::sqrt(linearComponent);
+
+        return 0;
+    }
+
     vec3 randomVec()
     {
-        vec3 vec(randomFloatInRange(0.0f, 1.0f), 
-                randomFloatInRange(0.0f, 1.0f), 
-                randomFloatInRange(0.0f, 1.0f));
+        vec3 vec(randomFloatInRange(-1.0f, 1.0f), 
+                randomFloatInRange(-1.0f, 1.0f), 
+                randomFloatInRange(-1.0f, 1.0f));
 
-        return vec.normalize();
+        return vec;
+    }
+
+    vec3 randomVecInUnitSphere()
+    {
+        while(true)
+        {
+            auto p = randomVec();
+
+            if(p.length_squared() < 1.0f)
+                return p;
+        }
     }
 }
 

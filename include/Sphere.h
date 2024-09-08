@@ -62,6 +62,7 @@ namespace lumen
 
             vec3 outNormal = (rec.p - center) / radius;
             rec.setFaceNormal(r, outNormal); // Setting the value of normal
+            rec.mat = mat;
 
             return true;
         }

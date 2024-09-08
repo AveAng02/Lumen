@@ -6,6 +6,7 @@
 
 namespace lumen
 {
+    class Material;
     class Geometry;
 
     class hitRecord
@@ -15,6 +16,7 @@ namespace lumen
         vec3 normal;
         double t;
         bool geoFaceFront;
+        std::shared_ptr<Material> mat;
         std::shared_ptr<Geometry> geoPtr;
         // TODO: add geometry
 
@@ -37,5 +39,6 @@ namespace lumen
                         hitRecord& rec) const = 0;
 
         color geoColor; // TODO: convert to a material pointer
+        std::shared_ptr<Material> mat;
     };
 }

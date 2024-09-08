@@ -3,6 +3,7 @@
 #include "Vec3.h"
 #include "Ray.h"
 #include "Sphere.h"
+#include "MathUtils.h"
 
 namespace lumen
 {
@@ -19,17 +20,18 @@ namespace lumen
             }
 
             // Checking the hemisphere of the random vec
-            vec3 direc = randomVec();
+            vec3 direc = randomVec().normalize();
 
             if(direc.dot(rec.normal) < 0.0f)
                 direc = -direc;
 
+            direc += rec.normal;
             return rec.geoPtr->geoColor * ray_color(ray(rec.p, direc), world, depth - 1);
         }
 
-        vec3 unit_direc = unit(r.direction());
-        auto t = 0.5 * (unit_direc.y() + 1.0);
-        return (1.0 - t) * color(1,1,1) + t*color(0.5,0.7,1);
+        vec3 unit_direc = r.direction().normalize();
+        auto t = 0.5 * (unit_direc.y() - 1.0);
+        return (1.0 - t) * color(1,1,1) + t * color(0.5,0.7,1);
     }
 
 
