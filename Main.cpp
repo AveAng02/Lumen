@@ -18,8 +18,8 @@ int main()
     (lumen::point3(0, -101.5, -1), 100, lumen::color(0.0f, 1.0f, 0.0f), "BIG_BROWN_SPHERE"));
 
     lumen::Camera cam;
-    cam.spp = 20;
-    cam.maxDepth = 10;
+    cam.scene.spp = 20;
+    cam.scene.maxDepth = 10;
 
     cam.render(world);
     

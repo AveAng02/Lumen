@@ -30,7 +30,7 @@ namespace lumen
         }
 
         vec3 unit_direc = r.direction().normalize();
-        auto t = 0.5 * (unit_direc.y() - 1.0);
+        auto t = 0.5 * (unit_direc.y() + 1.0);
         return (1.0 - t) * color(1,1,1) + t * color(0.5,0.7,1);
     }
 

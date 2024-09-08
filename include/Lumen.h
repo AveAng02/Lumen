@@ -19,6 +19,7 @@ namespace lumen
 }
 
 #include "Vec3.h"
+#include "Scene.h"
 #include "Ray.h"
 #include "MathUtils.h"
 #include "Color.h"
