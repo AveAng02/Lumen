@@ -11,11 +11,23 @@ int main()
     // Scene objects
     lumen::HitList world;
 
-    world.add(std::make_shared<lumen::SPHERE>
-    (lumen::point3(0, 0, -1), 0.75f, lumen::color(1,0,0), "RED_SPHERE"));
+    auto matGround = std::make_shared<lumen::Lambertian>(lumen::color(0.8f, 0.8f, 0.0f));
+    auto matCentral = std::make_shared<lumen::Lambertian>(lumen::color(0.1f, 0.2f, 0.5f));
+    auto matLeft = std::make_shared<lumen::Metal>(lumen::color(0.8f, 0.8f, 0.8f));
+    auto matRight = std::make_shared<lumen::Metal>(lumen::color(0.8f, 0.6f, 0.2f));
 
-    world.add(std::make_shared<lumen::SPHERE>
-    (lumen::point3(0, -101.5, -1), 100, lumen::color(0.0f, 1.0f, 0.0f), "BIG_BROWN_SPHERE"));
+    world.add(std::make_shared<lumen::Sphere>
+    (matGround, lumen::point3(0, -100.5, -1), 100, "GROUND_SPHERE"));
+
+    world.add(std::make_shared<lumen::Sphere>
+    (matCentral, lumen::point3(0, 0, -1), 0.5f, "CENTER_SPHERE"));
+
+    world.add(std::make_shared<lumen::Sphere>
+    (matLeft, lumen::point3(-1.2, 0, -1), 0.5f, "CENTER_SPHERE"));
+
+    world.add(std::make_shared<lumen::Sphere>
+    (matRight, lumen::point3(1.2, 0, -1), 0.5f, "CENTER_SPHERE"));
+
 
     lumen::Camera cam;
     cam.scene.spp = 20;

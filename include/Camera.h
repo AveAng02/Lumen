@@ -12,6 +12,7 @@
 #include "Scene.h"
 #include "HitList.h"
 #include "MathUtils.h"
+#include "RenderUtils.h"
 #include "Integrator.h"
 
 namespace lumen

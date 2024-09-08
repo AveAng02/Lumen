@@ -20,6 +20,7 @@ namespace lumen
             }
 
             // Checking the hemisphere of the random vec
+            /*
             vec3 direc = randomVec().normalize();
 
             if(direc.dot(rec.normal) < 0.0f)
@@ -27,6 +28,16 @@ namespace lumen
 
             direc += rec.normal;
             return rec.geoPtr->geoColor * ray_color(ray(rec.p, direc), world, depth - 1);
+            */
+
+            ray scattered;
+            color attenuation;
+
+            if(rec.mat->scatter(r, rec, attenuation, scattered))
+            {
+                return attenuation * ray_color(scattered, world, depth - 1);
+            }
+            return color(0,0,0);
         }
 
         vec3 unit_direc = r.direction().normalize();

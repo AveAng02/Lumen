@@ -47,24 +47,12 @@ namespace lumen
         return 0;
     }
 
-    vec3 randomVec()
+    bool nearZero(vec3 v)
     {
-        vec3 vec(randomFloatInRange(-1.0f, 1.0f), 
-                randomFloatInRange(-1.0f, 1.0f), 
-                randomFloatInRange(-1.0f, 1.0f));
-
-        return vec;
-    }
-
-    vec3 randomVecInUnitSphere()
-    {
-        while(true)
-        {
-            auto p = randomVec();
-
-            if(p.length_squared() < 1.0f)
-                return p;
-        }
+        auto esp = 1e-5;
+        return (std::fabs(v[0]) < esp) 
+                && (std::fabs(v[1]) < esp) 
+                && (std::fabs(v[2]) < esp);
     }
 }
 

@@ -13,8 +13,8 @@
 #include "MathUtils.h"
 #include "Pass.h"
 
-// #define BEAUTY_PASS
-#define NORMAL_PASS
+#define BEAUTY_PASS
+// #define NORMAL_PASS
 
 namespace lumen
 {
@@ -31,11 +31,11 @@ namespace lumen
         color pixelCol;
         int c = 0;
 
-        // std::cout << std::setprecision(2) << std::fixed;
+        std::cout << std::setprecision(2) << std::fixed;
 
         for(int i = scanLineBegin, j = 0; i <= scanLineEnd; i++)
         {
-            // std::cout << (i * 100.0f / scene.image_height) << " \% completed" << std::endl;
+            std::cout << (i * 100.0f / scene.image_height) << " \% completed" << std::endl;
 
             for(j = 0; j < scene.image_width; j++)
             {

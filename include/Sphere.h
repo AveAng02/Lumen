@@ -3,21 +3,34 @@
 #include "MathUtils.h"
 #include "Ray.h"
 #include "Geometry.h"
+#include "Material.h"
 
 namespace lumen
 {
     // SPHERE 
-    struct SPHERE : public Geometry
+    class Sphere : public Geometry
     {
-        SPHERE(point3 center_ = point3(0.0f, 0.0f, 0.0f), 
+    public:
+        Sphere(point3 center_ = point3(0.0f, 0.0f, 0.0f), 
                double radius_ = 1.0f, 
-               color col_ = color(1.0f, 0.0f, 0.0f), 
+               color col_ = color(), 
                std::string name_ = "SPHERE")
         :   center(center_),
             radius(radius_),
             name(name_)
         {
-            geoColor = col_;
+            mat->albedo = col_;
+        }
+
+        Sphere(std::shared_ptr<Material> mat_,
+               point3 center_ = point3(0.0f, 0.0f, 0.0f), 
+               double radius_ = 1.0f, 
+               std::string name_ = "SPHERE")
+        :   center(center_),
+            radius(radius_),
+            name(name_)
+        {
+            mat = mat_;
         }
 
         // Checks if the sphere hits the body
