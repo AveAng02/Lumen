@@ -13,8 +13,8 @@ int main()
 
     auto matGround = std::make_shared<lumen::Lambertian>(lumen::color(0.8f, 0.8f, 0.0f));
     auto matCentral = std::make_shared<lumen::Lambertian>(lumen::color(0.1f, 0.2f, 0.5f));
-    auto matLeft = std::make_shared<lumen::Metal>(lumen::color(0.8f, 0.8f, 0.8f));
-    auto matRight = std::make_shared<lumen::Metal>(lumen::color(0.8f, 0.6f, 0.2f));
+    auto matLeft = std::make_shared<lumen::Metal>(lumen::color(0.8f, 0.8f, 0.8f), 0.3f);
+    auto matRight = std::make_shared<lumen::Metal>(lumen::color(0.8f, 0.6f, 0.2f), 0.1f);
 
     world.add(std::make_shared<lumen::Sphere>
     (matGround, lumen::point3(0, -100.5, -1), 100, "GROUND_SPHERE"));
@@ -30,8 +30,8 @@ int main()
 
 
     lumen::Camera cam;
-    cam.scene.spp = 20;
-    cam.scene.maxDepth = 10;
+    cam.scene.spp = 100;
+    cam.scene.maxDepth = 50;
 
     cam.render(world);
     

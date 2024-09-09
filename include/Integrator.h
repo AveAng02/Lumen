@@ -13,8 +13,8 @@
 #include "MathUtils.h"
 #include "Pass.h"
 
-#define BEAUTY_PASS
-// #define NORMAL_PASS
+// #define BEAUTY_PASS
+#define NORMAL_PASS
 
 namespace lumen
 {

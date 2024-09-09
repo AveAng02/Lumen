@@ -33,7 +33,7 @@ namespace lumen
         virtual bool scatter(const ray& rayIn, const hitRecord& rec, 
             color& attenuation, ray& scattered) const
         {
-            auto randVec = randomVec().normalize();
+            auto randVec = randomVecInUnitSphere().normalize();
 
             if(rec.normal.dot(randVec) < 0)
                 randVec = -randVec;
@@ -52,7 +52,8 @@ namespace lumen
     class Metal : public Material
     {
     public:
-        Metal(const color& albedo_)
+        Metal(const color& albedo_, float fuzz)
+        : metalFuzz(fuzz)
         {
             albedo = albedo_;
         }
@@ -61,10 +62,15 @@ namespace lumen
             color& attenuation, ray& scattered) const
         {
             auto reflected = getReflectedVec(rayIn.direction(), rec.normal);
+            reflected = reflected.normalize() 
+                        + (metalFuzz * randomVecInUnitSphere().normalize());
             scattered = ray(rec.p, reflected);
             attenuation = albedo;
-            return true;
+            return (scattered.direction().dot(rec.normal) > 0.0f);
         }
+
+    private:
+        float metalFuzz;
     };
 }
 
