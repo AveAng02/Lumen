@@ -91,7 +91,8 @@ namespace lumen
             float cosTheta = std::fmin(rec.normal.dot(-unitDirec), 1.0f);
             float sinTheta = std::sqrt(1.0f - cosTheta * cosTheta);            
 
-            if(rx * sinTheta > 1.0f)
+            if(rx * sinTheta > 1.0f 
+              || reflectance(cosTheta, rx) > randomFloatInRange(0, 1))
             {
                 nextRay = getReflectedVec(unitDirec, rec.normal);
             }
