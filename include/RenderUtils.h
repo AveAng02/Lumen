@@ -43,4 +43,14 @@ namespace lumen
     {
         return v - 2 * v.dot(n) * n;
     }
+
+    vec3 getRefractedVec(const vec3& direction, const vec3& normal, float nbyn)
+    {
+        auto cosTheta = std::fmin(normal.dot(-direction), 1.0f);
+        vec3 perpendicularVec = nbyn * (direction + cosTheta * normal);
+        vec3 parallelVec = -std::sqrt(std::fabs(1.0f 
+                            - perpendicularVec.length_squared())) * normal;
+        
+        return perpendicularVec + parallelVec;
+    }
 }

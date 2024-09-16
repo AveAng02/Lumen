@@ -72,6 +72,30 @@ namespace lumen
     private:
         float metalFuzz;
     };
+
+    class Dielectric : public Material
+    {
+    public:
+        Dielectric(float ri)
+        : refractiveIndex(ri)
+        {}
+
+        virtual bool scatter(const ray& inRay, const hitRecord& rec, 
+            color& attenuation, ray& scattered) const
+        {
+            attenuation = color(1.0f, 1.0f, 1.0f);
+            double rx = rec.geoFaceFront ? (1.0f / refractiveIndex) : refractiveIndex;
+
+            vec3 unitDirec = inRay.direction().normalize();
+            vec3 refractedRay = getRefractedVec(unitDirec, rec.normal, rx);
+         
+            scattered = ray(rec.p, refractedRay);
+            return true;
+        }
+
+    private:
+        float refractiveIndex;
+    };
 }
 
 #endif // MATERIAL_H
