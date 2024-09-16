@@ -1,7 +1,9 @@
 # Lumen
 Building a ray tracer based on the book Ray Tracing in One Weekend Peter Shirley edited by Steve Hollasch and Trevor David Black.
 
-![](https://github.com/AveAng02/Lumen/blob/RTOW-1/output/output_beauty.png)
+![display pic](https://github.com/AveAng02/Lumen/blob/RTOW-1/output/output_beauty.png)
+
+
 
 ## Build
 
