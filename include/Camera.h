@@ -62,10 +62,10 @@ namespace lumen
             // stores the rgb data width wise
             std::vector<uint32_t> rgbData (scene.image_height * scene.image_width * 3, 0); 
             uint32_t c = 0;
-            uint32_t numOfThreads = 0;
+            uint32_t numOfThreads = 15;
 
-            std::cout << "Enter the number of Threads : ";
-            std::cin >> numOfThreads;
+            std::cout << "Enter the number of Threads : " << numOfThreads << std::endl;
+            // std::cin >> numOfThreads;
 
             uint32_t scanLinesPerThread = (scene.image_height / numOfThreads) - 1;
             std::vector<std::thread> threadList (numOfThreads);

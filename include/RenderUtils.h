@@ -53,4 +53,11 @@ namespace lumen
         
         return perpendicularVec + parallelVec;
     }
+
+    float refractance(float cosValue, float refIdx)
+    {
+        auto r0 = (1.0f - refIdx) / (1.0f + refIdx);
+        r0 = r0 * r0;
+        return r0 + (1.0f - r0) * std::pow((1.0f - cosValue), 5.0f);
+    }
 }

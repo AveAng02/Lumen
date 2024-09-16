@@ -84,12 +84,23 @@ namespace lumen
             color& attenuation, ray& scattered) const
         {
             attenuation = color(1.0f, 1.0f, 1.0f);
-            double rx = rec.geoFaceFront ? (1.0f / refractiveIndex) : refractiveIndex;
 
             vec3 unitDirec = inRay.direction().normalize();
-            vec3 refractedRay = getRefractedVec(unitDirec, rec.normal, rx);
-         
-            scattered = ray(rec.p, refractedRay);
+            vec3 nextRay;
+            float rx = rec.geoFaceFront ? (1.0f / refractiveIndex) : refractiveIndex;
+            float cosTheta = std::fmin(rec.normal.dot(-unitDirec), 1.0f);
+            float sinTheta = std::sqrt(1.0f - cosTheta * cosTheta);            
+
+            if(rx * sinTheta > 1.0f)
+            {
+                nextRay = getReflectedVec(unitDirec, rec.normal);
+            }
+            else
+            {
+                nextRay = getRefractedVec(unitDirec, rec.normal, rx);
+            }
+        
+            scattered = ray(rec.p, nextRay);
             return true;
         }
 
