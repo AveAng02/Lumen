@@ -67,8 +67,9 @@ namespace lumen
             uint32_t totalThreads = 15;
             uint32_t numOfThreads = totalThreads - 1;
 
-            std::cout << "Enter the number of Threads : " << numOfThreads << std::endl;
-            // std::cin >> numOfThreads;
+            std::cout << "Enter the number of Threads : ";
+            std::cin >> totalThreads;
+            numOfThreads = totalThreads - 1;
 
             uint32_t scanLinesPerThread = (scene.image_height / numOfThreads) - 1;
             std::vector<std::thread> threadList (totalThreads);

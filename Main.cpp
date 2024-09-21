@@ -34,7 +34,7 @@ int main()
 
     lumen::Camera cam;
     cam.scene.spp = 100;
-    cam.scene.maxDepth = 50;
+    cam.scene.maxDepth = 100;
 
     cam.render(world);
     

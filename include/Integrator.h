@@ -81,7 +81,7 @@ namespace lumen
         {
             if(std::fabs(globalCounter - prev) > 0.1f)
             {
-                std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
+                std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
                 << (globalCounter * 100.0f / height) 
                 << " \% completed" << std::flush;
 
@@ -89,7 +89,7 @@ namespace lumen
             }            
         }
 
-        std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
+        std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
         << "100.00 \% completed" << std::endl;
     }
 }
