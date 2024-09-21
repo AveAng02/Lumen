@@ -33,10 +33,12 @@ int main()
     (matRight, lumen::point3(1, 0, -1), 0.5f, "RIGHT_SPHERE"));
 
     lumen::Camera cam;
+    cam.lookFrom = lumen::point3(0.0f, 0.0f, 1.0f);
+    cam.vfov = 90.0f;
     cam.scene.aspectRatio = 16.0f / 9.0f;
     cam.scene.image_width = 800u;
-    cam.scene.spp         = 100;
-    cam.scene.maxDepth    = 50;
+    cam.scene.spp         = 20;
+    cam.scene.maxDepth    = 10;
     cam.initialize();
 
     cam.render(world);

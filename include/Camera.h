@@ -19,12 +19,17 @@ namespace lumen
 {
     class Camera
     {
+    private:
+        vec3 u, v, w;
+        
     public:
-        float focal_length, vpW, vpH;
+        point3 lookFrom, lookAt;
+        vec3 vup;
+        float vfov;
 
         Camera()
         {
-            initialize();
+            lookAt = lumen::point3();
         }
         
         void initialize()
@@ -32,12 +37,13 @@ namespace lumen
             globalCounter = 0; 
             scene.image_height = scene.image_width / scene.aspectRatio;
 
+            scene.camera_center = lookFrom;
+
             // Camera
             // Camera position = (0,0,0)
-            focal_length = 1.0;
-            vpW = 2.0;  // view port height
-            vpH = vpW / scene.aspectRatio; // view port width
-            scene.camera_center = lumen::point3(0, 0, 1);
+            auto focal_length = (lookFrom - lookAt).length();
+            auto vpW = 2.0;  // view port height
+            auto vpH = vpW / scene.aspectRatio; // view port width
 
             // Vectors on the view port edges
             auto horizontal = lumen::vec3(vpW, 0, 0); // view port u
