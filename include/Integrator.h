@@ -5,6 +5,8 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <atomic>
+#include <mutex>
 
 #include "Ray.h"
 #include "Scene.h"
@@ -16,6 +18,9 @@
 #define BEAUTY_PASS
 // #define NORMAL_PASS
 
+std::atomic_uint32_t globalCounter;
+std::mutex mtx;
+
 namespace lumen
 {
     void integratorKernel(std::vector<uint32_t>& rgbData, 
@@ -25,18 +30,17 @@ namespace lumen
                         const int scanLineBegin, 
                         const int scanLineEnd)
     {
-        std::cout << "Starting thread ID " << id << std::endl;
+        std::unique_lock<std::mutex> kernelMtx(mtx);
+        kernelMtx.unlock();
 
         ray hitRay;
         color pixelCol;
         int c = 0;
 
-        std::cout << std::setprecision(2) << std::fixed;
+        // std::cout << "Starting thread ID " << id << std::endl;
 
         for(int i = scanLineBegin, j = 0; i <= scanLineEnd; i++)
         {
-            std::cout << (i * 100.0f / scene.image_height) << " \% completed" << std::endl;
-
             for(j = 0; j < scene.image_width; j++)
             {
                 pixelCol = color();
@@ -61,7 +65,32 @@ namespace lumen
 
                 // std::cout << rgbData[c - 3] << " " << rgbData[c - 2] << " " << rgbData[c - 1] << std::endl;
             }
+        
+            globalCounter++;
         }
+    }
+
+    void counter(int id, int height)
+    {
+        float prev = 0.0f;
+
+        // std::cout << "Counter thread " << id << " started" << std::endl;
+        std::cout << std::setprecision(2) << std::fixed;
+
+        while(std::fabs(globalCounter - height) > 0.1f)
+        {
+            if(std::fabs(globalCounter - prev) > 0.1f)
+            {
+                std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
+                << (globalCounter * 100.0f / height) 
+                << " \% completed" << std::flush;
+
+                prev = globalCounter;
+            }            
+        }
+
+        std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
+        << "100.00 \% completed" << std::endl;
     }
 }
 

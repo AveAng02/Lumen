@@ -27,6 +27,8 @@ namespace lumen
         
         void initialize()
         {
+            globalCounter = 0;
+            
             scene.aspectRatio = 16.0 / 9.0;
             scene.image_width = 800u;
             scene.image_height = scene.image_width / scene.aspectRatio;
@@ -62,13 +64,14 @@ namespace lumen
             // stores the rgb data width wise
             std::vector<uint32_t> rgbData (scene.image_height * scene.image_width * 3, 0); 
             uint32_t c = 0;
-            uint32_t numOfThreads = 15;
+            uint32_t totalThreads = 15;
+            uint32_t numOfThreads = totalThreads - 1;
 
             std::cout << "Enter the number of Threads : " << numOfThreads << std::endl;
             // std::cin >> numOfThreads;
 
             uint32_t scanLinesPerThread = (scene.image_height / numOfThreads) - 1;
-            std::vector<std::thread> threadList (numOfThreads);
+            std::vector<std::thread> threadList (totalThreads);
             std::vector<uint32_t> lowerLimits (numOfThreads, 0), upperLimits (numOfThreads, 0);
 
             // Defining upper and lower limits
@@ -79,11 +82,6 @@ namespace lumen
             {
                 upperLimits[i] = lowerLimits[i] + scanLinesPerThread;
                 lowerLimits[i + 1] = upperLimits[i] + 1;
-            }
-
-            for(int i = 0; i < numOfThreads; i++)
-            {
-                std::cout << lowerLimits[i] << " " << upperLimits[i] << std::endl;
             }
 
             // Creating data per thread
@@ -102,8 +100,11 @@ namespace lumen
                                 scene, world, i, lowerLimits[i], upperLimits[i]);
             }
 
+            // initializing the counter thread
+            threadList[totalThreads - 1] = std::thread(counter, totalThreads - 1, scene.image_height);
+
             // joining threads
-            for(uint32_t i = 0; i < numOfThreads; i++)
+            for(uint32_t i = 0; i < totalThreads; i++)
             {
                 threadList[i].join();
             }
