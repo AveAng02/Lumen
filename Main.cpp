@@ -11,7 +11,7 @@ int main()
     // Scene objects
     lumen::HitList world;
 
-    auto matGround = std::make_shared<lumen::Lambertian>(lumen::color(0.6f, 0.796f, 0.733f));
+    auto matGround = std::make_shared<lumen::Lambertian>(lumen::color(0.6f, 1.0f, 0.733f));
     auto matCentral = std::make_shared<lumen::Lambertian>(lumen::color(1.0f, 0.549f, 0.0f));
     auto matLeft = std::make_shared<lumen::Dielectric>(1.5f); // std::make_shared<lumen::Metal>(lumen::color(0.8f, 0.8f, 0.8f), 0.3f);
     auto matBubble = std::make_shared<lumen::Dielectric>(1.0f / 1.5f);
@@ -33,8 +33,11 @@ int main()
     (matRight, lumen::point3(1, 0, -1), 0.5f, "RIGHT_SPHERE"));
 
     lumen::Camera cam;
-    cam.scene.spp = 100;
-    cam.scene.maxDepth = 100;
+    cam.scene.aspectRatio = 16.0f / 9.0f;
+    cam.scene.image_width = 800u;
+    cam.scene.spp         = 100;
+    cam.scene.maxDepth    = 50;
+    cam.initialize();
 
     cam.render(world);
     
