@@ -17,29 +17,29 @@ namespace lumen
         
         void initialize()
         {
-            aspectRatio = 16.0 / 9.0;
-            image_width = 400u;
             image_height = image_width / aspectRatio;
 
-            // Camera
-            // Camera position = (0,0,0)
-            auto focal_length = 1.0;
-            auto vpW = 2.0;  // view port height
-            auto vpH = vpW / aspectRatio; // view port width
-            camera_center = lumen::point3(0, 0, 1);
+            camera_center = lookFrom;
 
-            // Vectors on the view port edges
-            auto horizontal = lumen::vec3(vpW, 0, 0); // view port u
-            auto vertical = lumen::vec3(0, -vpH, 0);  // view port v
+            auto focal_length = (lookFrom - lookAt).length();
+            auto theta = degreeToRadians(vfov);
+            auto h = std::tan(theta / 2.0f);
+            auto vpH = 2.0f * h * focal_length;
+            auto vpW = vpH * aspectRatio;
 
-            // Pitch between pixels in horizontal and vertical directions
-            deltaU = horizontal / image_width;
-            deltaV = vertical / image_height;
+            w = (lookFrom - lookAt).normalize();
+            u = vup.cross(w).normalize();
+            v = w.cross(u);
 
-            // Location of upper left corner of the view port
-            auto vpReference = camera_center - lumen::vec3(0, 0, focal_length) 
-                                - horizontal/2 - vertical/2;
-            pXRef = vpReference + 0.5 * (deltaU + deltaV); // Location of upper left pixel
+            auto vpU = vpW * u;
+            auto vpV = vpH * -v;
+
+            deltaU = vpU / image_width;
+            deltaV = vpV / image_height;
+
+            auto vpUpLeft = camera_center - (focal_length * w) - vpU/2 - vpV/2;
+
+            pXRef = vpUpLeft + 0.5 * (deltaU + deltaV);
         }
 
         double aspectRatio;
