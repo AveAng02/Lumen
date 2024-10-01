@@ -3,10 +3,10 @@
 #ifndef HITLIST
 #define HITLIST
 
-#include "Geometry.h"
-
 #include <memory>
 #include <vector>
+
+#include "Geometry.h"
 
 namespace lumen
 {

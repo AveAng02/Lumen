@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Vec3.h"
-#include "Ray.h"
-#include "Sphere.h"
-#include "MathUtils.h"
+#include "Material.h"
 
 namespace lumen
 {
@@ -18,17 +15,6 @@ namespace lumen
             {
                 return rec.geoPtr->geoColor;
             }
-
-            // Checking the hemisphere of the random vec
-            /*
-            vec3 direc = randomVec().normalize();
-
-            if(direc.dot(rec.normal) < 0.0f)
-                direc = -direc;
-
-            direc += rec.normal;
-            return rec.geoPtr->geoColor * ray_color(ray(rec.p, direc), world, depth - 1);
-            */
 
             ray scattered;
             color attenuation;

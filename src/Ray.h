@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef RAY_H__
+#define RAY_H__
+
 #include "Vec3.h"
 
 namespace lumen
@@ -42,3 +45,4 @@ namespace lumen
 
 }
 
+#endif // RAY_H__

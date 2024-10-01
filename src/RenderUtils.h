@@ -1,7 +1,6 @@
 #pragma once
-#include "Ray.h"
-#include "Scene.h"
-#include "MathUtils.h"
+
+#include "Camera.h"
 
 namespace lumen
 {
@@ -25,12 +24,12 @@ namespace lumen
         }
     }
     
-    ray getRandomRay(int shifti, int shiftj, const Scene& scene) 
+    ray getRandomRay(int shifti, int shiftj, const Camera& scene) 
     {
         auto offset = vec3(randomFloatInRange(0.0f, 1.0f), 
                     randomFloatInRange(0.0f, 1.0f), 0);
 
-        auto samplePixel = scene.vpReference
+        auto samplePixel = scene.pXRef
                         + ((shifti + offset[0]) * scene.deltaU)
                         + ((shiftj + offset[1]) * scene.deltaV);
 

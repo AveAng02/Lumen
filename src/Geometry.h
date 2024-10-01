@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "Vec3.h"
 #include "Ray.h"
 
 namespace lumen
@@ -18,7 +19,6 @@ namespace lumen
         bool geoFaceFront;
         std::shared_ptr<Material> mat;
         std::shared_ptr<Geometry> geoPtr;
-        // TODO: add geometry
 
         void setFaceNormal(const ray& r, const vec3& outWardNormal)
         {

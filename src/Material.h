@@ -1,11 +1,10 @@
 #pragma once
 
-#ifndef MATERIAL_H
-#define MATERIAL_H
+#ifndef MATERIAL_H__
+#define MATERIAL_H__
 
-#include "Lumen.h"
-#include "Geometry.h"
 #include "RenderUtils.h"
+#include "Geometry.h"
 
 namespace lumen
 {

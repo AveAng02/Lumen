@@ -6,6 +6,10 @@
 
 namespace lumen
 {
+    // Constants
+    const double INF = std::numeric_limits<double>::infinity();
+    const double PI = 3.1415926535897932385;
+    
     bool withinBounds(float x, float min, float max)
     {
         return min < x && x < max;

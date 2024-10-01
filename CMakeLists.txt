@@ -11,13 +11,16 @@ project(Lumen VERSION 0.0.1)
 include_directories(include)
 
 add_executable(Lumen Main.cpp 
-include/Vec3.h
-include/Ray.h
-include/Geometry.h
-include/HitList.h
-include/Sphere.h 
-include/Pass.h
-include/Camera.h)
+src/Vec3.h
+src/Ray.h
+src/MathUtils.h
+src/Geometry.h
+src/HitList.h
+src/Sphere.h 
+src/Pass.h
+src/Camera.h
+src/Integrator.h
+src/Camera.cpp)
 
 target_include_directories(Lumen PUBLIC
                            "${PROJECT_BINARY_DIR}"

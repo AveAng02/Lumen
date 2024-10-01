@@ -1,9 +1,6 @@
 #pragma once
 
-#include "MathUtils.h"
-#include "Ray.h"
-#include "Geometry.h"
-#include "Material.h"
+
 
 namespace lumen
 {
