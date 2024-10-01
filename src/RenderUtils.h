@@ -4,6 +4,12 @@
 
 namespace lumen
 {
+    vec3 samplingSquare()
+    {
+        return vec3(randomFloatInRange(0.0f, 1.0f) - 0.5f, 
+                randomFloatInRange(0.0f, 1.0f) - 0.5f, 0.0f);
+    }
+
     vec3 randomVec()
     {
         vec3 vec(randomFloatInRange(-1.0f, 1.0f), 
@@ -24,17 +30,16 @@ namespace lumen
         }
     }
     
-    ray getRandomRay(int shifti, int shiftj, const Camera& scene) 
+    ray getRandomRay(int shifti, int shiftj, const Camera& scene)
     {
-        auto offset = vec3(randomFloatInRange(0.0f, 1.0f), 
-                    randomFloatInRange(0.0f, 1.0f), 0);
+        auto offset = samplingSquare();
 
         auto samplePixel = scene.pXRef
-                        + ((shifti + offset[0]) * scene.deltaU)
-                        + ((shiftj + offset[1]) * scene.deltaV);
+                        + ((shifti + offset.x()) * scene.deltaV)
+                        + ((shiftj + offset.y()) * scene.deltaU);
 
         auto rayOrigin = scene.camera_center;
-        auto rayDirection = (samplePixel - scene.camera_center).normalize();
+        auto rayDirection = samplePixel - rayOrigin;
         return ray(rayOrigin, rayDirection);
     }
 

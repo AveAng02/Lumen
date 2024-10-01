@@ -7,15 +7,13 @@ namespace lumen
     // Defining Ray Color
     color ray_color(const ray& r, const HitList& world, int depth)
     {
+        if(depth <= 0)
+            return color();
+
         hitRecord rec;
 
         if(world.hit(r, 0.001f, INF, rec))
         {
-            if(depth <= 0)
-            {
-                return rec.geoPtr->geoColor;
-            }
-
             ray scattered;
             color attenuation;
 
@@ -23,6 +21,7 @@ namespace lumen
             {
                 return attenuation * ray_color(scattered, world, depth - 1);
             }
+            
             return color(0,0,0);
         }
 

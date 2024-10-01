@@ -47,6 +47,13 @@ namespace lumen
                         (e[2] * vec.z()));
             }
 
+            vec3 cross(const vec3& v) const
+            {
+                return vec3(e[1] * v.e[2] - e[2] * v.e[1],
+                            e[2] * v.e[0] - e[0] * v.e[2],
+                            e[0] * v.e[1] - e[1] * v.e[0]);
+            }
+
             vec3 operator-() const
             {
                 return vec3(-e[0], -e[1], -e[2]);

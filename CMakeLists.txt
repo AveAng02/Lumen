@@ -19,8 +19,7 @@ src/HitList.h
 src/Sphere.h 
 src/Pass.h
 src/Camera.h
-src/Integrator.h
-src/Camera.cpp)
+src/Integrator.h)
 
 target_include_directories(Lumen PUBLIC
                            "${PROJECT_BINARY_DIR}"

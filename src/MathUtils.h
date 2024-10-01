@@ -38,7 +38,7 @@ namespace lumen
 
     float degreeToRadians(float degrees)
     {
-        return degrees * PI * 0.0055555555f; // divided by 180 = 0.005555
+        return degrees * PI / 180.0f;
     }
 
     float clamp(float x, float min, float max)
