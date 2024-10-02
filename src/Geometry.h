@@ -13,8 +13,11 @@ namespace lumen
     class hitRecord
     {
     public:
+        int depth;
+        ray r;
         point3 p;
         vec3 normal;
+        color hitCol;
         double t;
         bool geoFaceFront;
         std::shared_ptr<Material> mat;
@@ -26,6 +29,8 @@ namespace lumen
             geoFaceFront = (outWardNormal.dot(r.direction()) < 0.0f);
             normal = geoFaceFront ? outWardNormal : -outWardNormal;
         }
+
+        void print();
     };
 
     class Geometry

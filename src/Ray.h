@@ -30,7 +30,7 @@ namespace lumen
                 return o + t*d;
             }
 
-            void print()
+            void print() const
             {
                 std::cout << "Ray :\nOrigin : ";
                 o.print();

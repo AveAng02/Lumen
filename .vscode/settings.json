@@ -53,6 +53,8 @@
         "ratio": "cpp",
         "stop_token": "cpp",
         "thread": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "deque": "cpp",
+        "stack": "cpp"
     }
 }

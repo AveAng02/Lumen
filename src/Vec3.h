@@ -118,7 +118,7 @@ namespace lumen
                 return *this;
             }
 
-            void print()
+            void print() const
             {
                 std::cout << "Vec3f : { " << e[0] << ", " << e[1] << ", " << e[2] << "}\n";
             }

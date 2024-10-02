@@ -8,6 +8,7 @@
 #include <atomic>
 #include <mutex>
 #include <thread>
+#include <stack>
 
 #include "MathUtils.h"
 #include "RenderUtils.h"
@@ -23,7 +24,8 @@ namespace lumen
     void renderSingleThread(const HitList& world, const Camera& cam)
     {
         ray hitRay;
-        color pixCol;
+        color pixCol, tempCol;
+        std::stack<hitRecord> hitRecordStack; // tracking the traversal of a ray
         int c = 0;
 
         std::vector<uint32_t> rgbData (cam.image_height * cam.image_width * 3, 0);
@@ -36,13 +38,40 @@ namespace lumen
             {
                 pixCol = color();
 
+                // empty stack
+                while(!hitRecordStack.empty())
+                {
+                    hitRecordStack.pop();
+                }
+
                 for(int sample = 0; sample < cam.spp; sample++)
                 {
                     hitRay = getRandomRay(i, j, cam);
-                    pixCol += ray_color(hitRay, world, cam.maxDepth);
+                    pixCol += ray_color(hitRay, world, hitRecordStack, cam.maxDepth);
                 }
 
+                tempCol = pixCol;
+
                 pixCol /= cam.spp;
+
+                // Print if pixel is black
+                if(pixCol.x() <= 0.001f && pixCol.y() <= 0.001f 
+                && pixCol.z() <= 0.001f)
+                {
+                    std::cout << "\nTempCol = ";
+                    tempCol.print();
+                    std::cout << "PixCol = ";
+                    pixCol.print();
+
+                    while(!hitRecordStack.empty())
+                    {
+                        hitRecordStack.top().print();
+                        std::cout << "\n";
+                        hitRecordStack.pop();
+                    }
+
+                    std::cin.get();
+                }
 
                 rgbData[c++] = static_cast<int>(255.999 * clamp(pixCol[0], 0.0f, 1.0f));
                 rgbData[c++] = static_cast<int>(255.999 * clamp(pixCol[1], 0.0f, 1.0f));
@@ -88,6 +117,7 @@ namespace lumen
     {
         ray hitRay;
         color pixelCol;
+        std::stack<hitRecord> hitRecordStack; // tracking the traversal of a ray
         int c = 0;
 
         // std::cout << "Starting thread ID " << id << std::endl;
@@ -102,7 +132,7 @@ namespace lumen
                 {
                     hitRay = getRandomRay(i, j, scene);
 #ifdef BEAUTY_PASS
-                    pixelCol += ray_color(hitRay, world, scene.maxDepth);
+                    pixelCol += ray_color(hitRay, world, hitRecordStack, scene.maxDepth);
 #endif // BEAUTY_PASS
 
 #ifdef NORMAL_PASS
@@ -158,7 +188,7 @@ namespace lumen
 
         // std::cout << "Enter the number of Threads : ";
         // std::cin >> totalThreads;
-        totalThreads = 15;
+        totalThreads = 16;
         std::cout << "Number of threads used = " << totalThreads << std::endl;
         integratorThreads = totalThreads - 1;
 

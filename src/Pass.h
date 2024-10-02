@@ -1,28 +1,37 @@
 #pragma once
 
+#include <stack>
+
 #include "Material.h"
 
 namespace lumen
 {
     // Defining Ray Color
-    color ray_color(const ray& r, const HitList& world, int depth)
+    color ray_color(const ray& r, const HitList& world, 
+                std::stack<hitRecord>& recStack, int depth)
     {
-        if(depth <= 0)
-            return color();
-
         hitRecord rec;
 
         if(world.hit(r, 0.001f, INF, rec))
         {
+            if(depth <= 0)
+            {
+                return rec.geoPtr->geoColor;
+            }
+
             ray scattered;
             color attenuation;
 
             if(rec.mat->scatter(r, rec, attenuation, scattered))
             {
-                return attenuation * ray_color(scattered, world, depth - 1);
+                rec.depth = depth;
+                rec.r = r;
+                rec.hitCol = attenuation;
+                recStack.push(rec);
+                return attenuation * ray_color(scattered, world, recStack, depth - 1);
             }
-            
-            return color(0,0,0);
+
+            return color(1,0,0);
         }
 
         vec3 unit_direc = r.direction().normalize();

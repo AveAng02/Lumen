@@ -10,22 +10,18 @@ namespace lumen
     public:
         Sphere(point3 center_ = point3(0.0f, 0.0f, 0.0f), 
                double radius_ = 1.0f, 
-               color col_ = color(), 
-               std::string name_ = "SPHERE")
+               color col_ = color())
         :   center(center_),
-            radius(radius_),
-            name(name_)
+            radius(radius_)
         {
             mat->albedo = col_;
         }
 
         Sphere(std::shared_ptr<Material> mat_,
                point3 center_ = point3(0.0f, 0.0f, 0.0f), 
-               double radius_ = 1.0f, 
-               std::string name_ = "SPHERE")
+               double radius_ = 1.0f)
         :   center(center_),
-            radius(radius_),
-            name(name_)
+            radius(radius_)
         {
             mat = mat_;
         }
@@ -79,6 +75,5 @@ namespace lumen
 
         point3 center;
         double radius;
-        std::string name;
     };
 }

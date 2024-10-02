@@ -3,6 +3,7 @@
 #ifndef MATERIAL_H__
 #define MATERIAL_H__
 
+#include "Geometry.h"
 #include "RenderUtils.h"
 #include "Geometry.h"
 
@@ -11,6 +12,13 @@ namespace lumen
     class Material
     {
     public:
+        enum class MatType
+        {
+            LAMBERTIAN,
+            DIELECTRIC,
+            METAL
+        };
+
         Material(const color& col_ = color()) {}
 
         virtual ~Material() = default;
@@ -18,7 +26,10 @@ namespace lumen
         virtual bool scatter(const ray& r, const hitRecord& record, 
                             color& attenuation, ray& scatteredRay) const = 0;
 
+        virtual void print() const = 0;
+
         color albedo;
+        MatType type;
     };
 
     class Lambertian : public Material
@@ -27,6 +38,12 @@ namespace lumen
         Lambertian(const color& albedo_)
         {
             albedo = albedo_;
+            type = Material::MatType::LAMBERTIAN;
+        }
+
+        virtual void print() const override
+        {
+            std::cout << "Lambertian" << std::endl; 
         }
 
         virtual bool scatter(const ray& rayIn, const hitRecord& rec, 
@@ -55,6 +72,12 @@ namespace lumen
         : metalFuzz(fuzz)
         {
             albedo = albedo_;
+            type = Material::MatType::METAL;
+        }
+
+        virtual void print() const override
+        {
+            std::cout << "Metal" << std::endl; 
         }
 
         virtual bool scatter(const ray& rayIn, const hitRecord& rec, 
@@ -77,7 +100,14 @@ namespace lumen
     public:
         Dielectric(float ri)
         : refractiveIndex(ri)
-        {}
+        {
+            type = Material::MatType::DIELECTRIC;
+        }
+
+        virtual void print() const override
+        {
+            std::cout << "Dielectric" << std::endl; 
+        }
 
         virtual bool scatter(const ray& inRay, const hitRecord& rec, 
             color& attenuation, ray& scattered) const
@@ -107,6 +137,21 @@ namespace lumen
     private:
         float refractiveIndex;
     };
+
+    void hitRecord::print()
+    {
+        std::cout << "Depth = " << depth << std::endl;
+        std::cout << "hitpoint = ";
+        p.print();
+        std::cout << "normal at hitpoint = ";
+        normal.print();
+        std::cout << "color found = ";
+        hitCol.print();
+        std::cout << "Ray traversing :";
+        r.print();
+        std::cout << "Material Type : ";
+        mat->print();
+    }
 }
 
-#endif // MATERIAL_H
+#endif // MATERIAL_H__
