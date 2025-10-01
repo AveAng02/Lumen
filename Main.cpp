@@ -4,10 +4,13 @@
 #include <limits>
 #include <memory>
 
-#include "src/Lumen.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "external/stb/stb_image_write.h"
+// #include "src/Lumen.h"
 
 int main()
 {
+    /*
     // Scene objects
     lumen::HitList world;
 
@@ -53,5 +56,47 @@ int main()
     
     std::cerr << "Completed!\n";
 
+    */
+
+    const int w = 800;
+    const int h = 600;
+    const int channels = 3; // RGB
+
+    unsigned char *img = (unsigned char*)malloc(w * h * channels);
+
+    if(!img) {
+
+        std::cout << "Malloc failed" << std::endl;
+        return 1;
+    }
+
+    // 2D gradient loop
+    for(int y = 0; y < h; y++) {
+
+        for(int x = 0; x < w; x++) {
+
+            float nx = (float)x / (w - 1);
+            float ny = (float)y / (h - 1);
+
+            unsigned char r = (unsigned char)(255.0f * nx);
+            unsigned char g = (unsigned char)(255.0f * ny);
+            unsigned char b = (unsigned char)(255.0f * (0.5f * (nx + ny)));
+        
+            int idx = (y * w + x) * channels;
+            img[idx + 0] = r;
+            img[idx + 1] = g;
+            img[idx + 2] = b; 
+        }
+    }
+
+    if(!stbi_write_png("../output/gradient.png", w, h, channels, img, 0)) {
+
+        std::cout << "Write failed" << std::endl;
+        free(img);
+        return 1;
+    }
+
+    std::cout << "Write suceeded" << std::endl;
+    free(img);
     return 0;
 }
